@@ -37,7 +37,7 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/my-app
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -67,6 +67,4 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.ASP_STARTER_APP }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
-      - task: PublishBuildArtifacts@1
 
