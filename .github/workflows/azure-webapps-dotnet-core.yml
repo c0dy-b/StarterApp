@@ -68,5 +68,5 @@ jobs:
           publish-profile: ${{ secrets.ASP_STARTER_APP }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-- task: PublishBuildArtifacts@1
+      - task: PublishBuildArtifacts@1
 
