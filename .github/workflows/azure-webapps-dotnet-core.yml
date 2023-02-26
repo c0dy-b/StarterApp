@@ -4,6 +4,7 @@ env:
   AZURE_WEBAPP_NAME: 131181c2-1c20-48ef-97a2-e4a6595a6041 # set this to the name of your Azure Web App
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '7.0.x'                 # set this to the .NET Core version to use
+  WORKING_DIRECTORY: ./PracticeWebApp
 
 on:
   push:
@@ -35,7 +36,7 @@ jobs:
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
-        working-directory: /PracticeWebApp/
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
