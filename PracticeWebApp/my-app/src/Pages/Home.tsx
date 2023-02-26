@@ -27,6 +27,6 @@ export const Home = () => {
    const printFetchedData = `${JSON.stringify(data, null, 2)}`
 
     return (
-        <BasicPage/>
+        <BasicPage header='Home' data={data}/>
     )
 }
