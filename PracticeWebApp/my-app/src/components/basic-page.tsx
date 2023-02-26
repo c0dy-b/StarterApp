@@ -64,6 +64,9 @@ export const BasicPage: React.FC<PropTypes> = ({header, data}) => {
     )}
 
 const styles = css`
+.changing-something-minor{
+    
+}
     .background{
         width: 100%;
         height: 100vh;
