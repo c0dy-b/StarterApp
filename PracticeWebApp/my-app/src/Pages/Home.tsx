@@ -1,32 +1,27 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { DataCard } from '../components/card';
-import { BasicPage } from '../components/basic-page';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { BasicListingPage } from "../components/basic-listing-page";
+import { Loader } from "@mantine/core";
+import { useUser } from "../Contexts/use-auth";
 
 export const Home = () => {
-    const BaseURL = process.env.REACT_APP_BASE_API_ENTRIES_URL;
-    const [data, setData] = useState([]);
+  const BASEURL = process.env.REACT_APP_BASE_API_ENTRIES_URL;
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    type responseData = {
-        id: number;
-        description: string;
-        date: Date;
-    }
+  useEffect(() => {
+    axios
+      .get(`${BASEURL}/get-all`)
+      .then((response) => {
+        setData(response.data);
+        setIsLoading(false);
+        console.log("RESPONSE:", response);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.log("ERROR:", error);
+      });
+  }, []);
 
-   useEffect(() => {
-    axios.get<any>(BaseURL + 'get-all')
-    .then((response) => {
-        setData(response.data)
-        console.log('RESPONSE:', response)
-    })
-    .catch((error) => {
-        console.log("ERROR:", error)
-    })
-   }, []) 
-   
-   const printFetchedData = `${JSON.stringify(data, null, 2)}`
-
-    return (
-        <BasicPage header='Home' data={data}/>
-    )
-}
+  return <BasicListingPage header="Home" data={data} />;
+};

@@ -1,9 +1,9 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using PracticeWebApp.Common;
+using PracticeWebApp.Dtos.Entries;
+using PracticeWebApp.Dtos.Roles;
 
 namespace PracticeWebApp.Controllers
 {
@@ -22,6 +22,7 @@ namespace PracticeWebApp.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = RoleConstants.User)]
         [HttpPost("create")]
         public async Task<ActionResult<Entry>> Create(EntryCreateDto request)
         {
@@ -33,10 +34,14 @@ namespace PracticeWebApp.Controllers
             return Ok(request);
         }
 
-        [HttpGet("get-all")]
-        public async Task<IEnumerable<EntryDetailDto>> GetAll()
+        [Authorize(Roles = RoleConstants.User)]
+        [HttpGet("get-all/{userId}")]
+        public async Task<IEnumerable<EntryDetailDto>> GetAll([FromRoute] int userId)
         {
-            var entities = await _dataContext.Set<Entry>().ToListAsync();
+            var entities = await _dataContext.Set<Entry>()
+                .Where(x => x.CreatedByUserId == userId)
+                .OrderByDescending(x => x.Date)
+                .ToListAsync();
 
             var response = new List<EntryDetailDto>();
 
@@ -48,6 +53,7 @@ namespace PracticeWebApp.Controllers
             return response;
         }
 
+        [Authorize(Roles = RoleConstants.User)]
         [HttpGet("get-by-id/{id}")]
         public async Task<ActionResult<Entry>> GetById([FromRoute] int id)
         {
@@ -59,13 +65,15 @@ namespace PracticeWebApp.Controllers
             return Ok(response);
         }
 
-        [HttpPut("udpate/{id}")]
+        [Authorize(Roles = RoleConstants.User)]
+        [HttpPut("update/{id}")]
         public async Task<ActionResult<EntryDetailDto>> Update([FromRoute] int id, EntryCreateDto request)
         {
             var entity = await _dataContext
                 .Set<Entry>()
                 .SingleAsync(x => x.Id == id);
 
+            entity.Title = request.Title;
             entity.Description= request.Description;
 
             _dataContext.Update(entity);
@@ -75,6 +83,7 @@ namespace PracticeWebApp.Controllers
             return Ok(request);
         }
 
+        [Authorize(Roles = RoleConstants.User)]
         [HttpDelete("delete/{id}")]
         public async Task<ActionResult> Delete([FromRoute] int id)
         {
@@ -86,6 +95,40 @@ namespace PracticeWebApp.Controllers
             _dataContext.SaveChanges();
 
             return Ok();
-        } 
+        }
+
+        [Authorize(Roles = RoleConstants.User)]
+        [HttpGet("get-by-description")]
+        public async Task<ActionResult> GetByDescription(string description)
+        {
+            var entities = await _dataContext.Set<Entry>()
+                .Where(x => 
+                x.Description != null 
+                && x.Description.Equals(description)).ToListAsync();
+
+            var mappedEntries = new List<EntrySummaryDto>();
+
+            entities.ForEach(x => mappedEntries.Add(_mapper.Map<EntrySummaryDto>(x)));
+
+            return Ok(mappedEntries);
+        }
+
+        [Authorize(Roles = RoleConstants.User)]
+        [HttpGet("search-entries")]
+        public async Task<IEnumerable<EntryDetailDto>> SearchEntries([FromQuery] string query)
+        {
+            var entities = await _dataContext.Set<Entry>()
+                .Where(x => x.Title.Contains(query) || x.Description.Contains(query))
+                .ToListAsync();
+
+            List<EntryDetailDto> dtos = new();
+
+            foreach (var entity in entities)
+            {
+                dtos.Add(_mapper.Map<EntryDetailDto>(entity));
+            }
+
+            return dtos;
+        }
     }
 }
