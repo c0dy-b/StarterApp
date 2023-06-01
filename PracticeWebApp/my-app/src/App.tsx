@@ -1,17 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import {Home} from './Pages/Home'
+import React from "react";
+import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Home } from "./Pages/Home";
+import { EntriesDetail } from "./Pages/entries-detail";
+import { SearchEntries } from "./Pages/search-entries";
+import { LoginPage } from "./Pages/Login";
+import { AuthProvider } from "./Contexts/use-auth";
 
 function App() {
   return (
+    // <AuthProvider>
     <Router>
       <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route></Route>
+        <Route index element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/Home/" element={<Home />} />
+        <Route path="/Entries/Details/:id" element={<EntriesDetail />} />
+        <Route
+          path="/Search-Entries/"
+          element={<SearchEntries header="Search" />}
+        />
       </Routes>
     </Router>
+    // </AuthProvider>
   );
 }
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PracticeWebApp.DataContext;
 
@@ -11,9 +12,11 @@ using PracticeWebApp.DataContext;
 namespace PracticeWebApp.Migrations
 {
     [DbContext(typeof(DataContext.DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230528051121_Add_Entries_User")]
+    partial class Add_Entries_User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

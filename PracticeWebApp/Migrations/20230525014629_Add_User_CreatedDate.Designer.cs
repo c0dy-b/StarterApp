@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PracticeWebApp.DataContext;
 
@@ -11,9 +12,11 @@ using PracticeWebApp.DataContext;
 namespace PracticeWebApp.Migrations
 {
     [DbContext(typeof(DataContext.DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230525014629_Add_User_CreatedDate")]
+    partial class Add_User_CreatedDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,16 +113,13 @@ namespace PracticeWebApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PracticeWebApp.Dtos.Entries.Entry", b =>
+            modelBuilder.Entity("PracticeWebApp.Dtos.Entry", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CreatedByUserId")
-                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("Date")
                         .HasColumnType("datetimeoffset");
@@ -132,17 +132,12 @@ namespace PracticeWebApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Entry");
                 });
 
-            modelBuilder.Entity("PracticeWebApp.Dtos.Roles.Role", b =>
+            modelBuilder.Entity("PracticeWebApp.Dtos.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -172,22 +167,7 @@ namespace PracticeWebApp.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("PracticeWebApp.Dtos.Roles.UserRole", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("PracticeWebApp.Dtos.Users.User", b =>
+            modelBuilder.Entity("PracticeWebApp.Dtos.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -266,9 +246,24 @@ namespace PracticeWebApp.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("PracticeWebApp.Dtos.UserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("PracticeWebApp.Dtos.Roles.Role", null)
+                    b.HasOne("PracticeWebApp.Dtos.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -277,7 +272,7 @@ namespace PracticeWebApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("PracticeWebApp.Dtos.Users.User", null)
+                    b.HasOne("PracticeWebApp.Dtos.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -286,7 +281,7 @@ namespace PracticeWebApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("PracticeWebApp.Dtos.Users.User", null)
+                    b.HasOne("PracticeWebApp.Dtos.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -295,31 +290,22 @@ namespace PracticeWebApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("PracticeWebApp.Dtos.Users.User", null)
+                    b.HasOne("PracticeWebApp.Dtos.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PracticeWebApp.Dtos.Entries.Entry", b =>
+            modelBuilder.Entity("PracticeWebApp.Dtos.UserRole", b =>
                 {
-                    b.HasOne("PracticeWebApp.Dtos.Users.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PracticeWebApp.Dtos.Roles.UserRole", b =>
-                {
-                    b.HasOne("PracticeWebApp.Dtos.Roles.Role", "Role")
+                    b.HasOne("PracticeWebApp.Dtos.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PracticeWebApp.Dtos.Users.User", "User")
+                    b.HasOne("PracticeWebApp.Dtos.User", "User")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -330,12 +316,12 @@ namespace PracticeWebApp.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PracticeWebApp.Dtos.Roles.Role", b =>
+            modelBuilder.Entity("PracticeWebApp.Dtos.Role", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("PracticeWebApp.Dtos.Users.User", b =>
+            modelBuilder.Entity("PracticeWebApp.Dtos.User", b =>
                 {
                     b.Navigation("Roles");
                 });

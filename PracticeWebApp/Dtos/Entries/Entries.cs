@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using PracticeWebApp.Dtos.Users;
 
-namespace PracticeWebApp
+namespace PracticeWebApp.Dtos.Entries
 {
     public class Entry : EntryGetDto
     {
         public int Id { get; set; }
+        public User? User { get; set; }
+        public int? CreatedByUserId { get; set; }
     }
 
     public class EntryGetDto : EntryDto
@@ -13,8 +16,9 @@ namespace PracticeWebApp
 
     public class EntryDto
     {
-        public string? Description { get; set; }
-        public DateTimeOffset Date { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public DateTimeOffset Date { get; set; } = DateTime.UtcNow;
     }
 
     public class EntryDetailDto : EntryGetDto
@@ -25,12 +29,14 @@ namespace PracticeWebApp
     public class EntrySummaryDto
     {
         public string? Description { get; set; }
-        public DateTimeOffset? Date { get; set; }   
+        public DateTimeOffset? Date { get; set; } = DateTime.UtcNow;
     }
 
     public class EntryCreateDto
     {
-        public string? Description { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int CreatedByUserid { get; set; }
     }
 
     public class MappingConfiguration : Profile

@@ -1,62 +1,63 @@
- /** @jsxImportSource @emotion/react */
-import React from 'react';
-import { css } from '@emotion/react/macro'
-import moment from 'moment'
+/** @jsxImportSource @emotion/react */
+import React from "react";
+import { css } from "@emotion/react/macro";
+import moment from "moment";
+
+type responseData = {
+  id: number;
+  title: string;
+  description: string;
+  date: Date;
+};
 
 type DataCardTypes = {
-    data: {
-        description: string;
-        date: Date;
-        id: number;
-    }
-}
+  data?: responseData;
+};
 
-export const DataCard: React.FC<DataCardTypes> = ({data}) => {
-    return <div css={styles}>
-        <div className='container'>
-        <div className='data-card'>
-            
-            <div className='data-info'>
-                {`Id: ${data.id}`}
-            </div>
-
-            <div className='data-info'>
-                {`Date: ${moment(data.date).format('MM/DD/YYYY')}`}
-            </div>
-
-            <div className='data-info'>
-                {`Description: ${data.description}`}
-            </div>
+export const DataCard: React.FC<DataCardTypes> = ({ data }) => {
+  return (
+    <div css={styles}>
+      <div className="container">
+        <div className="data-card">
+          <div className="icon-container"></div>
+          <div className="data-info">{`Title: ${data?.title}`}</div>
+          <div className="data-info">
+            {`Date: ${moment(data?.date).format("MM/DD/YYYY")}`}
+          </div>
         </div>
-        </div> 
-        </div>
-}
+      </div>
+    </div>
+  );
+};
 
 const styles = css`
-
-.container{
+  .container {
     padding-bottom: 2rem;
     padding-top: 2rem;
 
-    .data-card{
-        width: 500px;
-        height: 200px;
-        background-color: black;
-        border-radius: 05px;
-        color: white;
-        
-        display: flex;
-        flex-direction: column;
+    .data-card {
+      width: 500px;
+      height: 200px;
+      background-color: #2a363b;
+      border-radius: 05px;
+      color: white;
+      font-size: 1.2rem;
 
-        
-        /* @media screen and (min-width: 1240px) {
-            width: 100%;
-            
-        } */
+      display: flex;
+      flex-direction: column;
 
-        .data-info{
-            padding-top: 1rem;
-        }
+      .data-info {
+        padding-top: 1rem;
+      }
+
+      :hover {
+        box-shadow: -10px 10px #1b1c1c;
+      }
     }
-}
-`
+    :hover {
+      cursor: pointer;
+      padding-bottom: 3rem;
+      padding-left: 3rem;
+    }
+  }
+`;
