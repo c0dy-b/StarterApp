@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,7 @@ namespace PracticeWebApp.Controllers
             _userService = userService;
         }
 
+        [AllowAnonymous]
         [HttpPost("create-user")]
         public async Task<ActionResult<UserSummaryDto>> Create(UserCreateDto request)
         {
@@ -40,10 +42,12 @@ namespace PracticeWebApp.Controllers
             return Ok(response);
         }
 
+        [AllowAnonymous]
         [HttpPost("sign-in")]
         public async Task<UserSummaryDto> SignIn(LoginUserDto request)
         {
             var userEntity = await _dataContext.Set<User>()
+                .Include(x => x.Roles)
                 .SingleOrDefaultAsync(x => x.UserName == request.Username);
 
             if (userEntity == null)

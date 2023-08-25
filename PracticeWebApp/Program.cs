@@ -1,12 +1,10 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using PracticeWebApp.DataContext;
 using PracticeWebApp.DataContext.Resources;
-using PracticeWebApp.Dtos;
 using PracticeWebApp.Dtos.Entries;
 using PracticeWebApp.Dtos.Roles;
 using PracticeWebApp.Dtos.Users;
@@ -14,10 +12,24 @@ using PracticeWebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = 401;
+        return Task.CompletedTask;
+    };
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = 403;
+        return Task.CompletedTask;
+    };
+});
 
+// Add services to the container.
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -54,21 +66,8 @@ builder.Services.ConfigureApplicationCookie(options =>
     };
 });
 
-//ServiceProvider provider = builder.Services.BuildServiceProvider();
-//var configuration = provider.GetService<IConfiguration>();
-
-//builder.Services.AddCors(options =>
-//{
-//    string? frontendURL = configuration?.GetValue<string>("frontend_url");
-
-//    options.AddDefaultPolicy(builder =>
-//    {
-//        builder
-//        .AllowAnyOrigin()
-//        .AllowAnyMethod()
-//        .AllowAnyHeader();
-//    });
-//});
+ServiceProvider provider = builder.Services.BuildServiceProvider();
+var configuration = provider.GetService<IConfiguration>();
 
 var app = builder.Build();
 
@@ -88,24 +87,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseDefaultFiles();
-
 app.UseStaticFiles();
 
-//app.UseCors();
+app.UseRouting();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseRouting()
-    .UseEndpoints(e => e.MapControllers());
+app.UseRewriter(new RewriteOptions().AddRedirectToNonWww());
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
-app.MapFallbackToFile("index.html");
+app.UseEndpoints(x =>
+{
+    x.MapControllers();
+});
 
 app.UseSpa(spaBuilder =>
 {

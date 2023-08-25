@@ -34,7 +34,7 @@ namespace PracticeWebApp.Controllers
             return Ok(request);
         }
 
-        [Authorize(Roles = RoleConstants.User)]
+        [Authorize]
         [HttpGet("get-all/{userId}")]
         public async Task<IEnumerable<EntryDetailDto>> GetAll([FromRoute] int userId)
         {

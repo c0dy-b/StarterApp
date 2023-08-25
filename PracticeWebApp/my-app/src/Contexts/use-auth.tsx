@@ -5,6 +5,7 @@ import { useAsyncRetry } from "react-use";
 import { StatusCodes } from "../constants/status-codes";
 import { useProduce } from "../hooks/use-produce";
 import { useSubscription } from "../hooks/use-subscription";
+import React from "react";
 
 const currentUser = "currentUser";
 
@@ -44,13 +45,11 @@ export const AuthProvider = (props: any) => {
   const fetchCurrentUser = useAsyncRetry(async () => {
     setLoading(true);
 
-    axios
-      .get(`api/auth/get-current-user`)
+    await axios
+      .get(`${BASEURL}/get-current-user`)
       .then((response) => {
         if (response.data === null) {
-          console.error("THERE WAS AN ISSUE IN USE-AUTH GETTING USER");
         }
-        console.log("MADE IT HERE :)");
         setState((draft) => {
           draft.user = response.data;
         });
@@ -90,10 +89,8 @@ export const AuthProvider = (props: any) => {
 
   //This listens for any "notify("user-login") and performs the action specified."
   useSubscription("user-login", () => {
-    console.log("DEBUG:", "useSub hit");
     setLoading(true);
     fetchCurrentUser.retry();
-    // console.log("USER YOU ARE TRYING TO LOGIN:", state.user);
   });
 
   //This listens for any "notify("user-logout") and performs the action specified."
@@ -108,7 +105,7 @@ export const AuthProvider = (props: any) => {
   );
 };
 
-type GetUserResponse = UserSummaryDto;
+// type GetUserResponse = UserSummaryDto;
 
 export function useUser() {
   const { user } = useContext(AuthContext);

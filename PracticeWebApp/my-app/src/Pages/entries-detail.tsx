@@ -16,7 +16,6 @@ import { useForm } from "@mantine/form";
 import {
   Button,
   Center,
-  CheckIcon,
   Flex,
   Group,
   Loader,
@@ -53,7 +52,7 @@ export const EntriesDetail = () => {
         setIsLoading(false);
         console.log("REQUEST FAILED: ", error);
       });
-  }, []);
+  }, [BASEURL, id]);
 
   const [deleteOpened, { open, close }] = useDisclosure(false);
 

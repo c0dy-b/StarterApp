@@ -3,14 +3,7 @@ import React, { useState } from "react";
 import { css } from "@emotion/react";
 import { Button, Card, Flex, Input } from "@mantine/core";
 import { BasicPage } from "../components/basic-page";
-import {
-  FaCheck,
-  FaLock,
-  FaTimes,
-  FaUnlock,
-  FaUser,
-  FaUserLock,
-} from "react-icons/fa";
+import { FaCheck, FaLock, FaTimes, FaUnlock, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import axios from "axios";
@@ -43,7 +36,7 @@ export const LoginPage = () => {
 
   const handleLogin = async (values: LoginFormProps) => {
     await axios
-      .post<LoginResponse>(`/api/auth/sign-in`, {
+      .post<LoginResponse>(`${BASEURL}/sign-in`, {
         username: values.userName,
         password: values.password,
       })
@@ -70,7 +63,7 @@ export const LoginPage = () => {
         });
       });
 
-    // loginUser();
+    loginUser();
   };
 
   return (

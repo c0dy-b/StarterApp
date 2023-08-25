@@ -1,11 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from "react";
+import React from "react";
 import { css } from "@emotion/react/macro";
 import { useNavigate } from "react-router-dom";
-import { Button, Card, Flex, Group, Loader, Text } from "@mantine/core";
+import { Button, Card, Flex, Group, Text } from "@mantine/core";
 import moment from "moment";
 import { FaSearch } from "react-icons/fa";
-import { useUser } from "../Contexts/use-auth";
 
 type responseData = {
   id: number;
@@ -25,7 +24,7 @@ export const BasicListingPage: React.FC<PropTypes> = ({ header, data }) => {
     navigate(`Entries/Details/${id}`);
   };
 
-  const user = useUser();
+  // const user = useUser();
   return (
     <div css={styles}>
       <div className="background">

@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
 import { Alert, Button, Card, Group, Input } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -93,4 +92,4 @@ export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
   );
 };
 
-const styles = css``;
+// const styles = css``;
