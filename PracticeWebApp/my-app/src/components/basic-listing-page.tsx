@@ -24,7 +24,6 @@ export const BasicListingPage: React.FC<PropTypes> = ({ header, data }) => {
     navigate(`Entries/Details/${id}`);
   };
 
-  // const user = useUser();
   return (
     <div css={styles}>
       <div className="background">
