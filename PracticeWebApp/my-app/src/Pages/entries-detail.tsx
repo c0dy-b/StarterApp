@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useDisclosure } from "@mantine/hooks";
@@ -15,6 +15,7 @@ import { notifications } from "@mantine/notifications";
 import { useForm } from "@mantine/form";
 import {
   Button,
+  Card,
   Center,
   Flex,
   Group,
@@ -22,7 +23,10 @@ import {
   Modal,
   Textarea,
   TextInput,
+  Text,
 } from "@mantine/core";
+import moment from "moment";
+import { useAsyncRetry } from "react-use";
 
 type responseData = {
   id: number;
@@ -39,8 +43,8 @@ export const EntriesDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [canEdit, setCanEdit] = useState<boolean>(false);
 
-  useEffect(() => {
-    axios
+  const fetchEntry = useAsyncRetry(async () => {
+    await axios
       .get<responseData>(`${BASEURL}/get-by-id/${id}`)
       .then((response) => {
         setData(response.data);
@@ -52,7 +56,7 @@ export const EntriesDetail = () => {
         setIsLoading(false);
         console.log("REQUEST FAILED: ", error);
       });
-  }, [BASEURL, id]);
+  });
 
   const [deleteOpened, { open, close }] = useDisclosure(false);
 
@@ -75,7 +79,7 @@ export const EntriesDetail = () => {
 
     setCanEdit(false);
 
-    navigate("/");
+    navigate("/home");
   };
 
   const form = useForm({
@@ -95,7 +99,7 @@ export const EntriesDetail = () => {
       : data?.description;
 
     if (values.title || values.description) {
-      axios.put(`${BASEURL}update/${id}`, {
+      axios.put(`${BASEURL}/update/${id}`, {
         title: updatedTitle,
         description: updatedDescription,
       });
@@ -109,6 +113,7 @@ export const EntriesDetail = () => {
     });
 
     setCanEdit(false);
+    fetchEntry.retry();
   };
 
   return (
@@ -121,65 +126,99 @@ export const EntriesDetail = () => {
                 size={"xs"}
                 className="breadcrumbs-button"
                 leftIcon={<FaArrowLeft />}
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/home")}
               >
                 {" "}
                 Home
               </Button>
-              <h1>{"Details"}</h1>
             </Group>
           </div>
 
           <form onSubmit={form.onSubmit((values) => handleUpdate(values))}>
             {!isLoading ? (
               <>
-                <TextInput
-                  w={500}
-                  label="Title"
-                  placeholder={data?.title}
-                  className="title-input"
-                  {...form.getInputProps("title")}
-                />
-
-                <Textarea
-                  label="Description"
-                  placeholder={data?.description}
-                  {...form.getInputProps("description")}
-                />
-
                 {!canEdit && (
-                  <Group position="left" mt={"md"}>
-                    <Button
-                      onClick={() => setCanEdit(true)}
-                      leftIcon={<FaPencilAlt />}
+                  <>
+                    <h1 className="entry-title">{data?.title}</h1>
+                    <Card
+                      w={500}
+                      shadow={"xl"}
+                      radius={"md"}
+                      style={{ backgroundColor: "#2a363b" }}
                     >
-                      Edit
-                    </Button>
-                  </Group>
+                      <Group position="apart" mt="md" mb="xs">
+                        <Text color={"white"} weight={500}>
+                          {data?.description}
+                        </Text>
+                      </Group>
+
+                      <Flex direction={"column"} align={"end"}>
+                        <Text size="sm" color="dimmed">
+                          {moment(data?.date).format("MMMM Do, YYYY")}
+                        </Text>
+
+                        <Group position="left" mt={"md"}>
+                          <Button
+                            variant="light"
+                            color="blue"
+                            onClick={() => setCanEdit(true)}
+                            leftIcon={<FaPencilAlt />}
+                          >
+                            Edit
+                          </Button>
+                        </Group>
+                      </Flex>
+                    </Card>
+                  </>
                 )}
 
                 {canEdit && (
-                  <>
-                    <Group position="right" mt="md">
-                      <Button
-                        color={"red"}
-                        onClick={open}
-                        leftIcon={<FaTrash />}
+                  <Card
+                    w={500}
+                    shadow={"xl"}
+                    radius={"md"}
+                    style={{ backgroundColor: "#2a363b" }}
+                  >
+                    <div className="title-input">
+                      <div className="input-label">Title</div>
+                      <TextInput
+                        w={465}
+                        placeholder={data?.title}
+                        {...form.getInputProps("title")}
+                      />
+                    </div>
+
+                    <div className="input-label">Description</div>
+                    <Textarea
+                      placeholder={data?.description}
+                      {...form.getInputProps("description")}
+                    />
+                    <>
+                      <Group
+                        className="edit-button-group"
+                        position="right"
+                        mt="md"
                       >
-                        Delete
-                      </Button>
-                      <Button
-                        onClick={() => setCanEdit(false)}
-                        color={"gray"}
-                        leftIcon={<FaTimes />}
-                      >
-                        Cancel
-                      </Button>
-                      <Button type="submit" leftIcon={<FaCheck />}>
-                        Save Changes
-                      </Button>
-                    </Group>
-                  </>
+                        <Button
+                          color={"red"}
+                          onClick={open}
+                          leftIcon={<FaTrash />}
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          onClick={() => setCanEdit(false)}
+                          color={"gray"}
+                          leftIcon={<FaTimes />}
+                        >
+                          Cancel
+                        </Button>
+                        <Button type="submit" leftIcon={<FaCheck />}>
+                          Save Changes
+                        </Button>
+                      </Group>
+                    </>
+                  </Card>
                 )}
               </>
             ) : (
@@ -194,6 +233,9 @@ export const EntriesDetail = () => {
           onClose={close}
           centered
         >
+          <div style={{ paddingBottom: "1rem" }}>
+            Are you sure you want to delete this post?
+          </div>
           <Modal.Body>
             <Center>
               <Flex gap={"md"}>
@@ -231,6 +273,7 @@ const styles = css`
   .background {
     width: 100%;
     height: 100vh;
+    padding-top: 3rem;
     background-color: #2a363b;
 
     display: flex;
@@ -253,8 +296,21 @@ const styles = css`
       padding-bottom: 2.5rem;
     }
 
+    .input-label {
+      color: white;
+    }
+
+    .entry-title {
+      color: white;
+      border-bottom: solid;
+    }
+
     .mantine-1ix1d88 {
       height: 200px;
+    }
+
+    .edit-button-group {
+      padding-top: 2rem;
     }
   }
   .content::-webkit-scrollbar {

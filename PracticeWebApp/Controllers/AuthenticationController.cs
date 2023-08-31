@@ -37,9 +37,29 @@ namespace PracticeWebApp.Controllers
         [HttpPost("create-user")]
         public async Task<ActionResult<UserSummaryDto>> Create(UserCreateDto request)
         {
-            var response = await _userService.CreateUser(request);
+            var user = new User
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                UserName = request.UserName,
+            };
 
-            return Ok(response);
+            var createdUser = await _userManager.CreateAsync(user, request.Password);
+
+            if (!createdUser.Succeeded)
+            {
+                throw new Exception(createdUser.Errors.First().Description, new Exception("There was a problem creating the user"));
+            }
+
+            var addToRole = await _userManager.AddToRoleAsync(user, request.Role);
+
+            if (!addToRole.Succeeded)
+            {
+                throw new Exception("There was a problem adding user to role");
+            }
+
+            var createdUserDto = _mapper.Map<UserSummaryDto>(user);
+            return Ok(createdUserDto);
         }
 
         [AllowAnonymous]
