@@ -1,11 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Button, Flex, Group } from "@mantine/core";
+import { Button, Group } from "@mantine/core";
 import React from "react";
 import { FaArrowLeft } from "react-icons/fa";
-import { useNavigate, useRoutes } from "react-router-dom";
-import { useUser } from "../Contexts/use-auth";
-import { UnAuthorizedPage } from "./unauthorized-page";
+import { useNavigate } from "react-router-dom";
 
 type PropTypes = {
   header?: string;
@@ -23,7 +21,7 @@ export const BasicPage: React.FC<PropTypes> = ({
 }) => {
   const navigate = useNavigate();
 
-  return true ? (
+  return (
     <div css={styles}>
       <div className="background">
         <div className="content">
@@ -40,28 +38,17 @@ export const BasicPage: React.FC<PropTypes> = ({
                   {breadcrumbsText}
                 </Button>
               )}
+              <h1>{header}</h1>
             </Group>
           </div>
-          <Group>
-            <Flex direction={"column"}>
-              <h1 className="page-header">{header}</h1>
-              {children}
-            </Flex>
-          </Group>
+          {children}
         </div>
       </div>
     </div>
-  ) : (
-    <UnAuthorizedPage />
   );
 };
 
 const styles = css`
-  .page-header {
-    color: white;
-    border-bottom: solid;
-  }
-
   .data-card {
     display: flex;
     align-items: center;
@@ -70,7 +57,6 @@ const styles = css`
     width: 100%;
     height: 100vh;
     background-color: #2a363b;
-    padding-top: 3rem;
 
     display: flex;
     justify-content: center;
@@ -96,6 +82,7 @@ const styles = css`
     height: 100px;
 
     .header {
+      color: white;
       padding-left: 4rem;
 
       .breadcrumbs-button {

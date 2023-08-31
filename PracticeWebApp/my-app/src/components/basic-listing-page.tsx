@@ -4,11 +4,9 @@ import { css } from "@emotion/react/macro";
 import { useNavigate } from "react-router-dom";
 import { Button, Card, Flex, Group, Text } from "@mantine/core";
 import moment from "moment";
-import { FaPlus, FaSearch } from "react-icons/fa";
-import { useUser } from "../Contexts/use-auth";
-import { SummaryCard } from "./summary-card";
+import { FaSearch } from "react-icons/fa";
 
-export type responseData = {
+type responseData = {
   id: number;
   title: string;
   description: string;
@@ -22,29 +20,21 @@ type PropTypes = {
 
 export const BasicListingPage: React.FC<PropTypes> = ({ header, data }) => {
   const navigate = useNavigate();
+  const handleClick = (id: number) => {
+    navigate(`Entries/Details/${id}`);
+  };
 
-  const canView = localStorage.getItem("logged-in");
-  return canView ? (
+  // const user = useUser();
+  return (
     <div css={styles}>
       <div className="background">
         <div className="content">
           <div className="header-container">
             <Flex justify={"space-between"}>
               <h1 className="header">{header}</h1>
-
               <Group style={{ paddingRight: "4rem" }}>
                 <Button
-                  onClick={() => {
-                    navigate("/entries/create");
-                  }}
-                  leftIcon={<FaPlus />}
-                  style={{ backgroundColor: "#2a363b" }}
-                >
-                  Create Entry
-                </Button>
-
-                <Button
-                  onClick={() => navigate("/search-entries")}
+                  onClick={() => navigate("/Search-Entries")}
                   leftIcon={<FaSearch />}
                   style={{ backgroundColor: "#2a363b" }}
                 >
@@ -56,23 +46,41 @@ export const BasicListingPage: React.FC<PropTypes> = ({ header, data }) => {
 
           <>
             {data?.map((response: responseData) => {
-              return <SummaryCard response={response} />;
+              return (
+                <div style={{ padding: "4rem" }} key={response.id}>
+                  <Card
+                    w={500}
+                    shadow={"xl"}
+                    radius={"md"}
+                    style={{ backgroundColor: "#2a363b" }}
+                  >
+                    <Group position="apart" mt="md" mb="xs">
+                      <Text color={"white"} weight={500}>
+                        {response.title}
+                      </Text>
+                    </Group>
+                    <Text size="sm" color="dimmed">
+                      {moment(response.date).format("MMMM Do, YYYY")}
+                    </Text>
+
+                    <Flex justify={"flex-end"}>
+                      <Button
+                        w={100}
+                        variant="light"
+                        color="blue"
+                        fullWidth
+                        mt="md"
+                        radius="md"
+                        onClick={() => handleClick(response.id)}
+                      >
+                        View
+                      </Button>
+                    </Flex>
+                  </Card>
+                </div>
+              );
             })}
           </>
-        </div>
-      </div>
-    </div>
-  ) : (
-    <div css={styles}>
-      <div className="background">
-        <div className="content">
-          <div className="header-container">
-            <Flex justify={"space-between"}>
-              <h1 className="header-un-authoried">
-                You are not authorized to be here!
-              </h1>
-            </Flex>
-          </div>
         </div>
       </div>
     </div>
@@ -87,7 +95,6 @@ const styles = css`
   .background {
     width: 100%;
     height: 100vh;
-    padding-top: 3rem;
     background-color: #2a363b;
 
     display: flex;
@@ -114,13 +121,6 @@ const styles = css`
     height: 100px;
 
     .header {
-      color: white;
-      padding-left: 4rem;
-    }
-
-    .header-un-authoried {
-      display: flex;
-      justify-content: center;
       color: white;
       padding-left: 4rem;
     }

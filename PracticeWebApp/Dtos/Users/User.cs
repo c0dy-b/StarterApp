@@ -51,8 +51,6 @@ namespace PracticeWebApp.Dtos.Users
 
         [Required]
         public string Password { get; set; } = string.Empty;
-
-        public string Role { get; set; } = string.Empty;
     }
 
     public class LoginUserDto
@@ -70,8 +68,7 @@ namespace PracticeWebApp.Dtos.Users
         {
             CreateMap<User, UserGetDto>();
             CreateMap<User, UserDetailDto>();
-            CreateMap<User, UserSummaryDto>()
-                .ReverseMap(); ;
+            CreateMap<User, UserSummaryDto>();
             CreateMap<UserCreateDto, UserSummaryDto>();
 
             CreateMap<User, UserCreateDto>()

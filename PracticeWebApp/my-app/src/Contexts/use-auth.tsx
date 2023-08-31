@@ -105,6 +105,8 @@ export const AuthProvider = (props: any) => {
   );
 };
 
+// type GetUserResponse = UserSummaryDto;
+
 export function useUser() {
   const { user } = useContext(AuthContext);
   if (!user) {
