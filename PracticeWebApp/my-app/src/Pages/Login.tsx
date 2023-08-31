@@ -9,6 +9,7 @@ import { useForm } from "@mantine/form";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
 import { loginUser } from "../Contexts/auth-service";
+import { notify, useSubscription } from "../hooks/use-subscription";
 
 type LoginFormProps = {
   userName: string;
@@ -63,7 +64,7 @@ export const LoginPage = () => {
         });
       });
 
-    loginUser();
+    localStorage.setItem("logged-in", "true");
   };
 
   return (
@@ -115,7 +116,7 @@ const styles = css`
     }
 
     .login-button {
-      padding-top: 4rem;
+      padding-top: 3rem;
     }
 
     .user-lock-icon {

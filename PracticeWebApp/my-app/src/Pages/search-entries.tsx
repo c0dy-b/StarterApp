@@ -1,20 +1,17 @@
 /** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
 import { Alert, Button, Card, Group, Input } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import axios from "axios";
 import React, { useState } from "react";
 import { FaInfoCircle, FaSearch } from "react-icons/fa";
+import { responseData } from "../components/basic-listing-page";
 import { BasicPage } from "../components/basic-page";
+import { SummaryCard } from "../components/summary-card";
 
 type PropTypes = {
   header: string;
-};
-
-type responseData = {
-  id: number;
-  description: string;
-  date: Date;
 };
 
 export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
@@ -59,10 +56,18 @@ export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
   };
 
   return (
-    <BasicPage header={header} breadcrumbsText={"Home"} breadcrumbsPath={"/"}>
-      <form onSubmit={form.onSubmit((values) => handleSearch(values))}>
-        <Group position="right">
+    <BasicPage
+      header={header}
+      breadcrumbsText={"Home"}
+      breadcrumbsPath={"/home"}
+    >
+      <form
+        css={styles}
+        onSubmit={form.onSubmit((values) => handleSearch(values))}
+      >
+        <Group position="right" className="input-style">
           <Input
+            // className="input-style"
             placeholder="Search"
             icon={<FaSearch />}
             w={500}
@@ -77,7 +82,7 @@ export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
 
       <Group>
         {data.map((values) => {
-          return <Card top={100}>{values.description}</Card>;
+          return <SummaryCard response={values} />;
         })}
       </Group>
 
@@ -92,4 +97,8 @@ export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
   );
 };
 
-// const styles = css``;
+const styles = css`
+  .input-style {
+    padding-bottom: 4rem;
+  }
+`;
