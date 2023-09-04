@@ -60,8 +60,8 @@ export const EntriesDetail = () => {
 
   const [deleteOpened, { open, close }] = useDisclosure(false);
 
-  const handleDelete = () => {
-    axios
+  const handleDelete = async () => {
+    await axios
       .delete(`${BASEURL}/delete/${data?.id}`)
       .then((response) => {
         console.log("Entry: ", response);
@@ -89,7 +89,7 @@ export const EntriesDetail = () => {
     },
   });
 
-  const handleUpdate = (values: {
+  const handleUpdate = async (values: {
     title: string | undefined;
     description: string | undefined;
   }) => {
@@ -99,21 +99,31 @@ export const EntriesDetail = () => {
       : data?.description;
 
     if (values.title || values.description) {
-      axios.put(`${BASEURL}/update/${id}`, {
-        title: updatedTitle,
-        description: updatedDescription,
-      });
+      await axios
+        .put(`${BASEURL}/update/${id}`, {
+          title: updatedTitle,
+          description: updatedDescription,
+        })
+        .then((response) => {
+          notifications.show({
+            title: "Entry Successfully Updated!",
+            message: "",
+            icon: <FaCheck />,
+            color: "green",
+          });
+          setCanEdit(false);
+          fetchEntry.retry();
+        })
+        .catch((error) => {
+          console.log(error);
+          notifications.show({
+            title: "There was a problem updating the entry",
+            message: "",
+            icon: <FaTimes />,
+            color: "red",
+          });
+        });
     }
-
-    notifications.show({
-      title: "Entry Successfully Updated!",
-      message: "",
-      icon: <FaCheck />,
-      color: "green",
-    });
-
-    setCanEdit(false);
-    fetchEntry.retry();
   };
 
   return (

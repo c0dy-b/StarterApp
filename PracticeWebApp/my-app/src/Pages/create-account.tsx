@@ -1,83 +1,88 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from "react";
 import { css } from "@emotion/react";
 import { Button, Card, Flex, Input } from "@mantine/core";
-import { BasicPage } from "../components/basic-page";
-import { FaCheck, FaLock, FaTimes, FaUnlock, FaUser } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
-import axios from "axios";
 import { notifications } from "@mantine/notifications";
+import axios from "axios";
+import react from "react";
+import { FaLock, FaTimes, FaUnlock, FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { BasicPage } from "../components/basic-page";
+import { Roles } from "../constants/Roles";
+import { useUser } from "../Contexts/use-auth";
 
-type LoginFormProps = {
-  userName: string;
-  password: string;
-};
-
-type LoginResponse = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  userName: string;
-};
-
-export const LoginPage = () => {
-  const BASEURL = process.env.REACT_APP_BASE_API_AUTH_URL;
+export const CreateAccountPage = () => {
+  const user = useUser();
   const navigate = useNavigate();
-  const [user, setUser] = useState<LoginResponse>();
 
   const form = useForm({
     initialValues: {
+      firstName: "",
+      lastName: "",
       userName: "",
       password: "",
     },
   });
 
-  const handleLogin = async (values: LoginFormProps) => {
+  const handleSubmit = async (values: {
+    firstName: string;
+    lastName: string;
+    userName: string;
+    password: string;
+  }) => {
     await axios
-      .post<LoginResponse>(`${BASEURL}/sign-in`, {
+      .post("/api/auth/create-user", {
+        firstName: values.firstName,
+        lastName: values.lastName,
         username: values.userName,
         password: values.password,
+        role: "User",
       })
-      .then((user) => {
-        console.log(user);
-        setUser(user.data);
-
-        if (user.data !== null) {
-          notifications.show({
-            title: "Successfully logged in!",
-            message: "",
-            color: "green",
-            icon: <FaCheck />,
-          });
-          navigate("/home");
-        }
+      .then((response) => {
+        notifications.show({
+          title: "Account Created!",
+          message: "",
+          color: "green",
+        });
+        navigate("/");
       })
       .catch((error) => {
+        console.log(error);
+
         notifications.show({
-          title: "There was a problem logging in.",
+          title: "An error has occured creating account",
           message: "",
           color: "red",
           icon: <FaTimes />,
         });
       });
-
-    localStorage.setItem("logged-in", "true");
   };
 
   return (
-    <BasicPage>
+    <BasicPage
+      header="Create Account"
+      breadcrumbsText="login"
+      breadcrumbsPath="/"
+    >
       <div css={styles}>
-        <Card className="login-container" w={500} h={330}>
-          <Flex
-            direction={"column"}
-            align={"center"}
-            className="user-lock-icon"
-          >
-            {user ? <FaUnlock /> : <FaLock />}
-            Sign in
-          </Flex>
-          <form onSubmit={form.onSubmit((values) => handleLogin(values))}>
+        <Card className="login-container" w={500} h={450}>
+          <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+            <div className="login-fields">
+              <Input
+                placeholder="First name"
+                icon={<FaUser />}
+                {...form.getInputProps("firstName")}
+              ></Input>
+            </div>
+
+            <div className="login-fields">
+              <Input
+                placeholder="Last name"
+                icon={<FaUser />}
+                {...form.getInputProps("lastName")}
+              ></Input>
+            </div>
+
             <div className="login-fields">
               <Input
                 placeholder="Username"
@@ -97,12 +102,12 @@ export const LoginPage = () => {
 
             <Flex className="login-button" justify={"space-between"}>
               <div
-                onClick={() => navigate("/create-account")}
+                onClick={() => navigate("/")}
                 className="create-account-link"
               >
-                Create an account
+                Already have an account?
               </div>
-              <Button type={"submit"}>Login</Button>
+              <Button type={"submit"}>Create Account</Button>
             </Flex>
           </form>
         </Card>

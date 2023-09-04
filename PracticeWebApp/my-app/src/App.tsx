@@ -8,6 +8,7 @@ import { LoginPage } from "./Pages/Login";
 import { AuthProvider } from "./Contexts/use-auth";
 import { NavBar } from "./components/nav-bar";
 import { EntryCreate } from "./Pages/entry-create";
+import { CreateAccountPage } from "./Pages/create-account";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/Home/" element={<Home />} />
             <Route path="/entries/details/:id" element={<EntriesDetail />} />
             <Route path="/entries/create" element={<EntryCreate />} />
+            <Route path="/create-account" element={<CreateAccountPage />} />
             <Route
               path="/search-entries/"
               element={<SearchEntries header="Search" />}

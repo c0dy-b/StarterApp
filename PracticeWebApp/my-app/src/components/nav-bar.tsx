@@ -6,6 +6,7 @@ import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { notify } from "../hooks/use-subscription";
+import { FaUser } from "react-icons/fa";
 
 export const NavBar = () => {
   const navigate = useNavigate();
@@ -20,12 +21,23 @@ export const NavBar = () => {
 
   const showNav = localStorage.getItem("logged-in");
 
-  return showNav ? (
+  return (
     <div css={styles}>
       <Flex justify={"end"}>
-        <Button color={"red"} onClick={open}>
-          Logout
-        </Button>
+        {showNav && (
+          <Button color={"red"} onClick={open}>
+            Logout
+          </Button>
+        )}
+
+        {!showNav && (
+          <Button
+            leftIcon={<FaUser />}
+            onClick={() => navigate("/create-account")}
+          >
+            Create Account
+          </Button>
+        )}
       </Flex>
 
       <Modal
@@ -60,8 +72,6 @@ export const NavBar = () => {
         </Modal.Body>
       </Modal>
     </div>
-  ) : (
-    <></>
   );
 };
 

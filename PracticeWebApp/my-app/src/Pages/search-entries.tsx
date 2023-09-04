@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Alert, Button, Card, Group, Input } from "@mantine/core";
+import { Alert, Button, Card, Flex, Group, Input } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import axios from "axios";
@@ -67,7 +67,6 @@ export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
       >
         <Group position="right" className="input-style">
           <Input
-            // className="input-style"
             placeholder="Search"
             icon={<FaSearch />}
             w={500}
@@ -81,9 +80,11 @@ export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
       </form>
 
       <Group>
-        {data.map((values) => {
-          return <SummaryCard response={values} />;
-        })}
+        <Flex direction="column">
+          {data.map((values) => {
+            return <SummaryCard response={values} />;
+          })}
+        </Flex>
       </Group>
 
       {data.length === 0 && !isLoading ? (
