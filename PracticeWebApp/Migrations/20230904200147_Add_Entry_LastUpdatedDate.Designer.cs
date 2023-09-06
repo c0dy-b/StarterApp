@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PracticeWebApp.DataContext;
 
@@ -11,9 +12,11 @@ using PracticeWebApp.DataContext;
 namespace PracticeWebApp.Migrations
 {
     [DbContext(typeof(DataContext.DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230904200147_Add_Entry_LastUpdatedDate")]
+    partial class Add_Entry_LastUpdatedDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,7 +145,7 @@ namespace PracticeWebApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Entry", (string)null);
+                    b.ToTable("Entry");
                 });
 
             modelBuilder.Entity("PracticeWebApp.Dtos.Roles.Role", b =>

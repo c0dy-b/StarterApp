@@ -12,7 +12,19 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <MantineProvider withNormalizeCSS withGlobalStyles>
+    <MantineProvider
+      withNormalizeCSS
+      withGlobalStyles
+      theme={{
+        breakpoints: {
+          xs: "30em",
+          sm: "48em",
+          md: "64em",
+          lg: "74em",
+          xl: "90em",
+        },
+      }}
+    >
       <Notifications />
       <App />
     </MantineProvider>

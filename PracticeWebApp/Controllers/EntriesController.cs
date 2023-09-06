@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PracticeWebApp.Common;
 using PracticeWebApp.Dtos.Entries;
 using PracticeWebApp.Dtos.Roles;
 
@@ -67,7 +68,7 @@ namespace PracticeWebApp.Controllers
 
         [Authorize(Roles = RoleConstants.User)]
         [HttpPut("update/{id}")]
-        public async Task<ActionResult<EntryDetailDto>> Update([FromRoute] int id, EntryCreateDto request)
+        public async Task<ActionResult<EntryDetailDto>> Update([FromRoute] int id, EntryUpdateDto request)
         {
             var entity = await _dataContext
                 .Set<Entry>()
@@ -75,6 +76,7 @@ namespace PracticeWebApp.Controllers
 
             entity.Title = request.Title;
             entity.Description= request.Description;
+            entity.LastUpdatedDate = request.LastUpdatedDate;
 
             _dataContext.Update(entity);
 
@@ -114,11 +116,13 @@ namespace PracticeWebApp.Controllers
         }
 
         [Authorize(Roles = RoleConstants.User)]
-        [HttpGet("search-entries")]
-        public async Task<IEnumerable<EntryDetailDto>> SearchEntries([FromQuery] string query)
+        [HttpGet("search-entries/{userId}")]
+        public async Task<ActionResult<Response<IEnumerable<EntryDetailDto>>>> SearchEntries([FromRoute] int userId, [FromQuery] string query)
         {
             var entities = await _dataContext.Set<Entry>()
-                .Where(x => x.Title.Contains(query) || x.Description.Contains(query))
+                .Where(x => 
+                x.CreatedByUserId == userId
+                && (x.Title.Contains(query) || x.Description.Contains(query)))
                 .ToListAsync();
 
             List<EntryDetailDto> dtos = new();
@@ -128,7 +132,9 @@ namespace PracticeWebApp.Controllers
                 dtos.Add(_mapper.Map<EntryDetailDto>(entity));
             }
 
-            return dtos;
+            var response = new Response<IEnumerable<EntryDetailDto>>(dtos);
+
+            return Ok(response);
         }
     }
 }

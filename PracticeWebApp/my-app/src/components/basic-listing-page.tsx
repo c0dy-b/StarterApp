@@ -13,6 +13,7 @@ export type responseData = {
   title: string;
   description: string;
   date: Date;
+  lastUpdatedDate: Date;
 };
 
 type PropTypes = {

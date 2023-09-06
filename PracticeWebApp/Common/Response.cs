@@ -2,7 +2,12 @@
 {
     public class Response<T>
     {
-        public string Data { get; set; } = string.Empty;
+        public Response(T data)
+        {
+            Data = data;
+        }
+
+        public T? Data { get; set; }
         public List<Error> Errors { get; set; } = new();
         public bool HasErrors => Errors.Count > 0;
 

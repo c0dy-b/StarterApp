@@ -33,6 +33,7 @@ type responseData = {
   title: string;
   description: string;
   date: Date;
+  lastUpdatedDate: Date;
 };
 
 export const EntriesDetail = () => {
@@ -103,6 +104,7 @@ export const EntriesDetail = () => {
         .put(`${BASEURL}/update/${id}`, {
           title: updatedTitle,
           description: updatedDescription,
+          lastUpdatedDate: new Date(),
         })
         .then((response) => {
           notifications.show({
@@ -152,22 +154,40 @@ export const EntriesDetail = () => {
                     <h1 className="entry-title">{data?.title}</h1>
                     <Card
                       w={500}
+                      mih={250}
                       shadow={"xl"}
                       radius={"md"}
                       style={{ backgroundColor: "#2a363b" }}
                     >
-                      <Group position="apart" mt="md" mb="xs">
-                        <Text color={"white"} weight={500}>
-                          {data?.description}
-                        </Text>
-                      </Group>
+                      <Text
+                        style={{ paddingTop: "1rem" }}
+                        color={"white"}
+                        weight={500}
+                      >
+                        {data?.description}
+                      </Text>
 
-                      <Flex direction={"column"} align={"end"}>
-                        <Text size="sm" color="dimmed">
-                          {moment(data?.date).format("MMMM Do, YYYY")}
-                        </Text>
+                      <div style={{ paddingTop: "25%" }}>
+                        <Flex justify="space-between">
+                          <Flex direction={"column"}>
+                            {data?.lastUpdatedDate && (
+                              <Flex justify={"flex-start"} align={"flex-end"}>
+                                <Text size="sm" color="dimmed">
+                                  {`Last Updated | ${moment(
+                                    data?.lastUpdatedDate
+                                  ).format("MMMM Do, YYYY")}`}
+                                </Text>
+                              </Flex>
+                            )}
 
-                        <Group position="left" mt={"md"}>
+                            <Flex justify={"flex-start"} align={"flex-end"}>
+                              <Text size="sm" color="dimmed">
+                                {`Created Date | ${moment(data?.date).format(
+                                  "MMMM Do, YYYY"
+                                )}`}
+                              </Text>
+                            </Flex>
+                          </Flex>
                           <Button
                             variant="light"
                             color="blue"
@@ -176,8 +196,8 @@ export const EntriesDetail = () => {
                           >
                             Edit
                           </Button>
-                        </Group>
-                      </Flex>
+                        </Flex>
+                      </div>
                     </Card>
                   </>
                 )}
@@ -278,7 +298,7 @@ export const EntriesDetail = () => {
 const styles = css`
   .data-card {
     display: flex;
-    align-items: center;
+    justify-content: flex-end;
   }
   .background {
     width: 100%;

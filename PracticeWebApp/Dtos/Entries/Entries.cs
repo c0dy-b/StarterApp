@@ -19,6 +19,8 @@ namespace PracticeWebApp.Dtos.Entries
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public DateTimeOffset Date { get; set; } = DateTime.UtcNow;
+
+        public DateTimeOffset? LastUpdatedDate { get; set; }
     }
 
     public class EntryDetailDto : EntryGetDto
@@ -39,6 +41,11 @@ namespace PracticeWebApp.Dtos.Entries
         public int CreatedByUserid { get; set; }
     }
 
+    public class EntryUpdateDto : EntryCreateDto
+    {
+        public DateTimeOffset LastUpdatedDate { get; set; }
+    }
+
     public class MappingConfiguration : Profile
     {
         public MappingConfiguration()
@@ -52,6 +59,7 @@ namespace PracticeWebApp.Dtos.Entries
             CreateMap<Entry, EntryDetailDto>()
                 .IncludeBase<Entry, EntryGetDto>();
             CreateMap<Entry, EntrySummaryDto>();
+            CreateMap<Entry, EntryUpdateDto>();
         }
     }
 }

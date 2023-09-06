@@ -35,13 +35,27 @@ export const SummaryCard: React.FC<props> = ({ response }) => {
             : response.description}
         </Text>
 
-        <Flex justify={"flex-end"}>
-          <Text size="sm" color="dimmed">
-            {moment(response.date).format("MMMM Do, YYYY")}
-          </Text>
-        </Flex>
+        <Flex justify={"space-between"}>
+          <Flex direction={"column"}>
+            {response.lastUpdatedDate && (
+              <Flex justify={"flex-start"} align="flex-end">
+                <Text size="sm" color="dimmed">
+                  {`Last Updated | ${moment(response.lastUpdatedDate).format(
+                    "MMMM Do, YYYY"
+                  )}`}
+                </Text>
+              </Flex>
+            )}
 
-        <Flex justify={"flex-end"}>
+            <Flex justify={"flex-start"} align="flex-end">
+              <Text size="sm" color="dimmed">
+                {`Created Date | ${moment(response.date).format(
+                  "MMMM Do, YYYY"
+                )}`}
+              </Text>
+            </Flex>
+          </Flex>
+
           <Button
             w={100}
             variant="light"

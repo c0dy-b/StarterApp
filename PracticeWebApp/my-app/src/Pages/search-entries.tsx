@@ -9,6 +9,7 @@ import { FaInfoCircle, FaSearch } from "react-icons/fa";
 import { responseData } from "../components/basic-listing-page";
 import { BasicPage } from "../components/basic-page";
 import { SummaryCard } from "../components/summary-card";
+import { useUser } from "../Contexts/use-auth";
 
 type PropTypes = {
   header: string;
@@ -16,6 +17,7 @@ type PropTypes = {
 
 export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
   const BASEURL = process.env.REACT_APP_BASE_API_ENTRIES_URL;
+  const user = useUser();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [data, setData] = useState<responseData[]>([]);
   const form = useForm({
@@ -27,7 +29,7 @@ export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
   const handleSearch = (values: { query: string }) => {
     if (values.query) {
       axios
-        .get<responseData[]>(`${BASEURL}/search-entries`, {
+        .get<responseData[]>(`${BASEURL}/search-entries/${user?.id}`, {
           params: {
             query: values.query,
           },
