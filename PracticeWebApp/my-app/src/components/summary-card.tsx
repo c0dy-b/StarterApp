@@ -4,10 +4,10 @@ import { Button, Card, Flex, Group, Text } from "@mantine/core";
 import moment from "moment";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { responseData } from "./basic-listing-page";
+import { EntriesResponseData } from "../constants/DataTypes";
 
 type props = {
-  response: responseData;
+  response: EntriesResponseData;
 };
 
 export const SummaryCard: React.FC<props> = ({ response }) => {

@@ -37,21 +37,23 @@ namespace PracticeWebApp.Controllers
 
         [Authorize]
         [HttpGet("get-all/{userId}")]
-        public async Task<IEnumerable<EntryDetailDto>> GetAll([FromRoute] int userId)
+        public async Task<ActionResult<Response<IEnumerable<EntryDetailDto>>>> GetAll([FromRoute] int userId)
         {
             var entities = await _dataContext.Set<Entry>()
                 .Where(x => x.CreatedByUserId == userId)
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
 
-            var response = new List<EntryDetailDto>();
+            var dtos = new List<EntryDetailDto>();
 
-            foreach (var item in entities)
+            foreach(var entity in entities)
             {
-                response.Add(_mapper.Map<EntryDetailDto>(item));
+                dtos.Add(_mapper.Map<EntryDetailDto>(entity));
             }
 
-            return response;
+            var response = new Response<IEnumerable<EntryDetailDto>>(dtos);
+
+            return Ok(response);
         }
 
         [Authorize(Roles = RoleConstants.User)]

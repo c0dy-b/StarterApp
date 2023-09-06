@@ -4,6 +4,7 @@ import { BasicListingPage } from "../components/basic-listing-page";
 import { useUser } from "../Contexts/use-auth";
 import { useAsyncRetry } from "react-use";
 import { Center, Flex, Loader } from "@mantine/core";
+import { ResponseData } from "../constants/DataTypes";
 
 export const Home = () => {
   const BASEURL = process.env.REACT_APP_BASE_API_ENTRIES_URL;
@@ -14,10 +15,9 @@ export const Home = () => {
 
   useEffect(() => {
     axios
-      .get(`${BASEURL}/get-all/${currentUser?.id}`)
+      .get<ResponseData>(`${BASEURL}/get-all/${currentUser?.id}`)
       .then((response) => {
-        console.log("RESPONSE:", response);
-        setData(response.data);
+        setData(response.data.data);
       })
       .catch((error) => {
         setIsLoading(false);

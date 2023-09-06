@@ -51,7 +51,6 @@ export const EntriesDetail = () => {
         setData(response.data);
 
         setIsLoading(false);
-        console.log("Entry: ", response);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -64,9 +63,7 @@ export const EntriesDetail = () => {
   const handleDelete = async () => {
     await axios
       .delete(`${BASEURL}/delete/${data?.id}`)
-      .then((response) => {
-        console.log("Entry: ", response);
-      })
+      .then((response) => {})
       .catch((error) => {
         console.log("REQUEST FAILED: ", error);
       });

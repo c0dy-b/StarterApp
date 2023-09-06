@@ -7,18 +7,11 @@ import moment from "moment";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { useUser } from "../Contexts/use-auth";
 import { SummaryCard } from "./summary-card";
-
-export type responseData = {
-  id: number;
-  title: string;
-  description: string;
-  date: Date;
-  lastUpdatedDate: Date;
-};
+import { EntriesResponseData } from "../constants/DataTypes";
 
 type PropTypes = {
   header: string;
-  data?: responseData[];
+  data?: EntriesResponseData[];
 };
 
 export const BasicListingPage: React.FC<PropTypes> = ({ header, data }) => {
@@ -56,8 +49,8 @@ export const BasicListingPage: React.FC<PropTypes> = ({ header, data }) => {
           </div>
 
           <>
-            {data?.map((response: responseData) => {
-              return <SummaryCard response={response} />;
+            {data?.map((response: EntriesResponseData) => {
+              return <SummaryCard response={response} key={response.id} />;
             })}
           </>
         </div>

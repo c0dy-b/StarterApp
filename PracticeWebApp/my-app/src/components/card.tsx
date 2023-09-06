@@ -2,16 +2,10 @@
 import React from "react";
 import { css } from "@emotion/react/macro";
 import moment from "moment";
-
-type responseData = {
-  id: number;
-  title: string;
-  description: string;
-  date: Date;
-};
+import { EntriesResponseData } from "../constants/DataTypes";
 
 type DataCardTypes = {
-  data?: responseData;
+  data?: EntriesResponseData;
 };
 
 export const DataCard: React.FC<DataCardTypes> = ({ data }) => {
