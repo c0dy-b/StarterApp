@@ -35,7 +35,7 @@ export const SearchEntries: React.FC<PropTypes> = ({ header }) => {
           },
         })
         .then((response) => {
-          setData(response.data.data);
+          setData(response.data.data as []);
           setIsLoading(false);
         })
         .catch((error) => {

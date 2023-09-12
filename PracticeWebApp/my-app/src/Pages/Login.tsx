@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import axios from "axios";
 import { notifications } from "@mantine/notifications";
+import { loginUser } from "../Contexts/auth-service";
 
 type LoginFormProps = {
   userName: string;
@@ -42,6 +43,7 @@ export const LoginPage = () => {
       .then((user) => {
         console.log(user);
         setUser(user.data);
+        loginUser();
 
         if (user.data !== null) {
           notifications.show({
@@ -61,14 +63,12 @@ export const LoginPage = () => {
           icon: <FaTimes />,
         });
       });
-
-    localStorage.setItem("logged-in", "true");
   };
 
   return (
     <BasicPage>
       <div css={styles}>
-        <Card className="login-container" w={500} h={330}>
+        <Card className="login-container" h={330}>
           <Flex
             direction={"column"}
             align={"center"}
@@ -80,6 +80,7 @@ export const LoginPage = () => {
           <form onSubmit={form.onSubmit((values) => handleLogin(values))}>
             <div className="login-fields">
               <Input
+                className="input-field"
                 placeholder="Username"
                 icon={<FaUser />}
                 {...form.getInputProps("userName")}
@@ -112,6 +113,18 @@ export const LoginPage = () => {
 };
 
 const styles = css`
+  @media screen and (max-width: 580px) {
+    .input-field {
+      width: 340px;
+    }
+  }
+
+  @media screen and (min-width: 581px) {
+    .input-field {
+      width: 500px;
+    }
+  }
+
   .login-container {
     background: #2a363b;
 

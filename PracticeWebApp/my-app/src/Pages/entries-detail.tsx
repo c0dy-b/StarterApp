@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useDisclosure } from "@mantine/hooks";
@@ -27,28 +27,21 @@ import {
 } from "@mantine/core";
 import moment from "moment";
 import { useAsyncRetry } from "react-use";
-
-type responseData = {
-  id: number;
-  title: string;
-  description: string;
-  date: Date;
-  lastUpdatedDate: Date;
-};
+import { EntriesResponseData, ResponseData } from "../constants/DataTypes";
 
 export const EntriesDetail = () => {
   const BASEURL = process.env.REACT_APP_BASE_API_ENTRIES_URL;
   const { id } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState<responseData>();
+  const [data, setData] = useState<EntriesResponseData>();
   const [isLoading, setIsLoading] = useState(true);
   const [canEdit, setCanEdit] = useState<boolean>(false);
 
   const fetchEntry = useAsyncRetry(async () => {
     await axios
-      .get<responseData>(`${BASEURL}/get-by-id/${id}`)
+      .get<ResponseData>(`${BASEURL}/get-by-id/${id}`)
       .then((response) => {
-        setData(response.data);
+        setData(response.data.data as EntriesResponseData);
 
         setIsLoading(false);
       })
@@ -196,6 +189,10 @@ export const EntriesDetail = () => {
                         </Flex>
                       </div>
                     </Card>
+
+                    {data?.references.map((x) => (
+                      <Card key={x.id}>{x.referencedId}</Card>
+                    ))}
                   </>
                 )}
 
@@ -269,7 +266,6 @@ export const EntriesDetail = () => {
                 <Button
                   onClick={() => {
                     close();
-                    setCanEdit(false);
                   }}
                   className="delete-modal-button"
                   color={"gray"}

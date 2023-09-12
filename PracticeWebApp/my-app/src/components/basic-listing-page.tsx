@@ -8,6 +8,7 @@ import { FaPlus, FaSearch } from "react-icons/fa";
 import { useUser } from "../Contexts/use-auth";
 import { SummaryCard } from "./summary-card";
 import { EntriesResponseData } from "../constants/DataTypes";
+import { BasicPage } from "./basic-page";
 
 type PropTypes = {
   header: string;
@@ -17,7 +18,7 @@ type PropTypes = {
 export const BasicListingPage: React.FC<PropTypes> = ({ header, data }) => {
   const navigate = useNavigate();
 
-  const canView = localStorage.getItem("logged-in");
+  const canView = useUser();
   return canView ? (
     <div css={styles}>
       <div className="background">
@@ -26,7 +27,7 @@ export const BasicListingPage: React.FC<PropTypes> = ({ header, data }) => {
             <Flex justify={"space-between"}>
               <h1 className="header">{header}</h1>
 
-              <Group style={{ paddingRight: "4rem" }}>
+              <Group className="button-group">
                 <Button
                   onClick={() => {
                     navigate("/entries/create");
@@ -57,19 +58,7 @@ export const BasicListingPage: React.FC<PropTypes> = ({ header, data }) => {
       </div>
     </div>
   ) : (
-    <div css={styles}>
-      <div className="background">
-        <div className="content">
-          <div className="header-container">
-            <Flex justify={"space-between"}>
-              <h1 className="header-un-authoried">
-                You are not authorized to be here!
-              </h1>
-            </Flex>
-          </div>
-        </div>
-      </div>
-    </div>
+    <BasicPage>You are not authorized to be here!</BasicPage>
   );
 };
 
@@ -78,45 +67,114 @@ const styles = css`
     display: flex;
     align-items: center;
   }
-  .background {
-    width: 100%;
-    height: 100vh;
-    padding-top: 3rem;
-    background-color: #2a363b;
 
-    display: flex;
-    justify-content: center;
-  }
+  @media screen and (min-width: 581px) {
+    .background {
+      width: 100%;
+      height: 100%;
+      padding-top: 3rem;
+      background-color: #2a363b;
 
-  .content {
-    width: 55%;
-    height: 100%;
-    background-color: #99b899;
-
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-
-    overflow-y: auto;
+      display: flex;
+      justify-content: center;
+    }
   }
   .content::-webkit-scrollbar {
     display: none;
   }
 
-  .header-container {
-    width: 100%;
-    height: 100px;
+  @media screen and (max-width: 580px) {
+    .content {
+      background-color: #99b899;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 581px) and (max-width: 989px) {
+    .content {
+      width: 100%;
+      background-color: #99b899;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      overflow-x: hidden;
+    }
+
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .content {
+      width: 55%;
+
+      height: fit-content;
+      background-color: #99b899;
+
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+
+      /* overflow-y: auto; */
+    }
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 579px) {
+    .header-container {
+      width: 100%;
+      height: 100px;
+    }
 
     .header {
       color: white;
-      padding-left: 4rem;
+      padding-left: 1rem;
+    }
+    .button-group {
+      padding-right: 1rem;
     }
 
     .header-un-authoried {
       display: flex;
       justify-content: center;
       color: white;
+
       padding-left: 4rem;
+    }
+  }
+
+  @media screen and (min-width: 580px) {
+    .header-container {
+      width: 100%;
+      height: 100px;
+
+      .header {
+        color: white;
+        padding-left: 4rem;
+      }
+
+      .button-group {
+        padding-right: 4rem;
+      }
+
+      .header-un-authoried {
+        display: flex;
+        justify-content: center;
+        color: white;
+        padding-left: 4rem;
+      }
     }
   }
 `;

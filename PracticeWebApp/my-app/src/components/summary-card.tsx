@@ -18,12 +18,7 @@ export const SummaryCard: React.FC<props> = ({ response }) => {
 
   return (
     <div css={styles} style={{ padding: "4rem" }} key={response.id}>
-      <Card
-        w={500}
-        shadow={"xl"}
-        radius={"md"}
-        style={{ backgroundColor: "#2a363b" }}
-      >
+      <Card w={500} shadow={"xl"} radius={"md"} className="card">
         <Group position="apart" mt="md" mb="xs">
           <Text color={"white"} weight={500}>
             {response.title}
@@ -76,5 +71,18 @@ export const SummaryCard: React.FC<props> = ({ response }) => {
 const styles = css`
   .description-summary {
     padding-bottom: 3rem;
+  }
+
+  @media screen and (max-width: 580px) {
+    .card {
+      width: 375px;
+      background-color: #2a363b;
+    }
+  }
+
+  @media screen and (min-width: 581px) {
+    .card {
+      background-color: #2a363b;
+    }
   }
 `;
