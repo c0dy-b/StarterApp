@@ -60,17 +60,13 @@ export const EntryCreate = () => {
       breadcrumbsText="Home"
     >
       <div css={styles}>
-        <Card
-          w={500}
-          shadow={"xl"}
-          radius={"md"}
-          style={{ backgroundColor: "#2a363b" }}
-        >
+        <Card className="data-card" shadow={"xl"} radius={"md"}>
           <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
             <div className="title-input">
               <div className="input-label">Title</div>
               <TextInput
-                w={465}
+                // w={465}
+                className="text-input"
                 placeholder="Enter a title!"
                 {...form.getInputProps("title")}
               />
@@ -97,6 +93,22 @@ export const EntryCreate = () => {
 
 const styles = css`
   padding-top: 0rem;
+
+  @media screen and (max-width: 580px) {
+    .text-input {
+      width: 325px;
+    }
+  }
+
+  @media screen and (min-width: 581px) {
+    .text-input {
+      width: 465px;
+    }
+  }
+
+  .data-card {
+    background-color: #2a363b;
+  }
 
   .input-label {
     color: white;

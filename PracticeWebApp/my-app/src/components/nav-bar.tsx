@@ -6,7 +6,9 @@ import { useDisclosure } from "@mantine/hooks";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { notify } from "../hooks/use-subscription";
-import { FaUser } from "react-icons/fa";
+import { FaBars, FaUser } from "react-icons/fa";
+import { useUser } from "../Contexts/use-auth";
+import { logoutUser } from "../Contexts/auth-service";
 
 export const NavBar = () => {
   const navigate = useNavigate();
@@ -15,29 +17,49 @@ export const NavBar = () => {
   const handleLogout = async () => {
     await axios.post("/api/auth/sign-out");
     close();
-    localStorage.clear();
+    logoutUser();
     navigate("/");
   };
 
-  const showNav = localStorage.getItem("logged-in");
+  const showNav = useUser();
 
   return (
     <div css={styles}>
       <Flex justify={"end"}>
-        {showNav && (
-          <Button color={"red"} onClick={open}>
-            Logout
-          </Button>
-        )}
+        <span className="desktop-view">
+          {showNav && (
+            <Button className="nav-button" color="red" onClick={open}>
+              Logout
+            </Button>
+          )}
 
-        {!showNav && (
-          <Button
-            leftIcon={<FaUser />}
-            onClick={() => navigate("/create-account")}
-          >
-            Create Account
-          </Button>
-        )}
+          {!showNav && (
+            <Button
+              className="nav-button"
+              leftIcon={<FaUser />}
+              onClick={() => navigate("/create-account")}
+            >
+              Create Account
+            </Button>
+          )}
+        </span>
+        <span className="mobile-view">
+          {showNav && (
+            <Button className="nav-button" color="red" onClick={open}>
+              Logout
+            </Button>
+          )}
+
+          {!showNav && (
+            <Button
+              className="nav-button"
+              leftIcon={<FaUser />}
+              onClick={() => navigate("/create-account")}
+            >
+              Create Account
+            </Button>
+          )}
+        </span>
       </Flex>
 
       <Modal
@@ -76,11 +98,36 @@ export const NavBar = () => {
 };
 
 const styles = css`
-  background-color: #2a363b;
-  border-bottom: solid;
-  border-color: #99b899;
-  border-width: 3px;
-  height: 75px;
+  @media screen and (min-width: 601px) {
+    background-color: #2a363b;
+    border-bottom: solid;
+    border-color: #99b899;
+    border-width: 3px;
+    height: 75px;
 
-  padding: 1rem;
+    padding: 1rem;
+    position: static;
+
+    .mobile-view {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .desktop-view .nav-button {
+      display: none;
+    }
+
+    .mobile-view {
+      padding: 1rem 1rem 1rem 0;
+
+      width: 100%;
+      background-color: #2a363b;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  .mobile-view {
+  }
 `;

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using PracticeWebApp.Common;
 using PracticeWebApp.Dtos.Entries;
 using PracticeWebApp.Dtos.Roles;
+using System.Collections.Specialized;
 
 namespace PracticeWebApp.Controllers
 {
@@ -40,6 +41,7 @@ namespace PracticeWebApp.Controllers
         public async Task<ActionResult<Response<IEnumerable<EntryDetailDto>>>> GetAll([FromRoute] int userId)
         {
             var entities = await _dataContext.Set<Entry>()
+                .Include(x => x.References)
                 .Where(x => x.CreatedByUserId == userId)
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
@@ -58,12 +60,13 @@ namespace PracticeWebApp.Controllers
 
         [Authorize(Roles = RoleConstants.User)]
         [HttpGet("get-by-id/{id}")]
-        public async Task<ActionResult<Entry>> GetById([FromRoute] int id)
+        public async Task<ActionResult<Response<EntryDetailDto>>> GetById([FromRoute] int id)
         {
-            var response = await _dataContext.Set<Entry>()
+            var entity = await _dataContext.Set<Entry>()
+                .Include(x => x.References)
                 .SingleAsync(x => x.Id == id);
 
-            _logger.LogInformation(response.ToString());
+            var response = new Response<EntryDetailDto>(_mapper.Map<EntryDetailDto>(entity));
 
             return Ok(response);
         }
@@ -137,6 +140,33 @@ namespace PracticeWebApp.Controllers
             var response = new Response<IEnumerable<EntryDetailDto>>(dtos);
 
             return Ok(response);
+        }
+
+        [Authorize(Roles = RoleConstants.User)]
+        [HttpPost("add-references")]
+        public async Task<ActionResult<Response<List<int>>>> AddEntryReferences(int entityId, List<int> referenceIds)
+        {
+            var entry = await _dataContext.Set<Entry>()
+                .Include(x => x.References)
+                .SingleAsync(x => x.Id == entityId);
+
+
+            var references = new List<Reference>();
+
+            foreach (var referenceId in referenceIds)
+            {
+                references.Add(new Reference
+                {
+                    ReferencedId = referenceId
+                });
+            }
+
+
+            entry.References= references;
+
+            _dataContext.SaveChanges();
+
+            return Ok(referenceIds);
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PracticeWebApp.Dtos.Users;
 
 namespace PracticeWebApp.Dtos.Entries
@@ -8,6 +10,7 @@ namespace PracticeWebApp.Dtos.Entries
         public int Id { get; set; }
         public User? User { get; set; }
         public int? CreatedByUserId { get; set; }
+        public List<Reference>? References { get; set; }
     }
 
     public class EntryGetDto : EntryDto
@@ -26,6 +29,7 @@ namespace PracticeWebApp.Dtos.Entries
     public class EntryDetailDto : EntryGetDto
     {
         public int Id { get; set; }
+        public List<Reference>? References { get; set; }
     }
 
     public class EntrySummaryDto

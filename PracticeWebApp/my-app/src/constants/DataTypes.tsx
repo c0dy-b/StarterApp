@@ -6,10 +6,16 @@ export type EntriesResponseData = {
   description: string;
   date: Date;
   lastUpdatedDate: Date;
+  references: ReferenceData[];
+};
+
+type ReferenceData = {
+  id: number;
+  referencedId: number;
 };
 
 export type ResponseData = {
-  data: [];
+  data: [] | EntriesResponseData;
   errors: [];
   hasErrors: boolean;
 };

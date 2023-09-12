@@ -44,8 +44,10 @@ export const BasicPage: React.FC<PropTypes> = ({
           </div>
           <Group>
             <Flex direction={"column"}>
-              <h1 className="page-header">{header}</h1>
-              {children}
+              <>
+                <h1 className="page-header">{header}</h1>
+                {children}
+              </>
             </Flex>
           </Group>
         </div>
@@ -69,37 +71,106 @@ const styles = css`
   .background {
     width: 100%;
     height: 100vh;
-    background-color: #2a363b;
-    padding-top: 3rem;
-
     display: flex;
-    justify-content: center;
   }
 
-  .content {
-    width: 55%;
-    height: 100%;
-    background-color: #99b899;
+  @media screen and (min-width: 581px) {
+    .background {
+      background-color: #2a363b;
+      padding-top: 3rem;
 
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-
-    overflow-y: auto;
-  }
-  .content::-webkit-scrollbar {
-    display: none;
+      display: flex;
+      justify-content: center;
+    }
   }
 
-  .header-container {
-    width: 100%;
-    height: 100px;
+  @media screen and (max-width: 580px) {
+    .content {
+      width: 100%;
+      background-color: #99b899;
 
-    .header {
-      padding-left: 4rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
-      .breadcrumbs-button {
-        background-color: #2a363b;
+      overflow-x: hidden;
+    }
+
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+
+    .header-container {
+      width: 100%;
+      height: 100px;
+
+      .header {
+        padding-left: 1rem;
+
+        .breadcrumbs-button {
+          background-color: #2a363b;
+        }
+      }
+    }
+  }
+
+  @media screen and (min-width: 581px) and (max-width: 989px) {
+    .content {
+      width: 100%;
+      background-color: #99b899;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      overflow-x: hidden;
+    }
+
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+
+    .header-container {
+      width: 100%;
+      height: 100px;
+
+      .header {
+        padding-left: 4rem;
+
+        .breadcrumbs-button {
+          background-color: #2a363b;
+        }
+      }
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .content {
+      width: 55%;
+
+      height: 100%;
+      background-color: #99b899;
+
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+
+      overflow-y: auto;
+    }
+    .content::-webkit-scrollbar {
+      display: none;
+    }
+
+    .header-container {
+      width: 100%;
+      height: 100px;
+
+      .header {
+        padding-left: 4rem;
+
+        .breadcrumbs-button {
+          background-color: #2a363b;
+        }
       }
     }
   }
